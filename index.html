@@ -46,18 +46,18 @@
   <label>공사 평수 (평)</label>
   <input type="number" id="pyung" placeholder="예: 33">
 
-  <label>철거 공사 (고정비 반영)</label>
+  <label>철거 공사 </label>
   <select id="demolition">
     <option value="0">선택 안함</option>
-    <option value="1500000">부분 철거 (150만원)</option>
-    <option value="2500000">전체 철거 (250만원)</option>
+    <option value="1500000">부분 철거 </option>
+    <option value="2500000">전체 철거 </option>
   </select>
 
-  <label>도배 (벽면 마감)</label>
+  <label>도배 </label>
   <select id="wall">
     <option value="0">선택 안함</option>
-    <option value="120000">전체 합지 도배 (평당 12만)</option>
-    <option value="180000">전체 실크 도배 (평당 18만)</option>
+    <option value="110000">전체 합지 도배 (평당 11만)</option>
+    <option value="170000">전체 실크 도배 (평당 17만)</option>
     <option value="250000">프리미엄(디아망/필름) (평당 25만)</option>
   </select>
 
@@ -115,7 +115,7 @@ function calculate() {
   }
 
   // 기본 공사비 (인건비, 자재 운반, 폐기물 등 기초비용) - 평당 100만 원 가정
-  let basePrice = pyung * 1000000; 
+  let basePrice = pyung + 1000000; 
   
   // 철거는 고정값 가산
   let demolition = +document.getElementById("demolition").value;
