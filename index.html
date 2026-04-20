@@ -5,23 +5,29 @@
 <title>인테리어 견적 계산기 | 파비디자인</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  :root { --main-color: #222; --accent-color: #4CAF50; }
-  body { font-family: 'Pretendard', sans-serif; max-width: 500px; margin: auto; padding: 20px; background: #f4f4f4; color: #333; line-height: 1.6; }
-  .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-  h1 { text-align: center; font-size: 24px; margin-bottom: 5px; color: var(--main-color); }
-  .top-text { text-align: center; font-weight: bold; margin-bottom: 5px; color: #555; }
-  .notice { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
-  label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
-  input, select { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 15px; }
-  input:focus, select:focus { outline: none; border-color: var(--main-color); }
+  :root { --main-color: #222; --accent-color: #d32f2f; --bg-color: #f8f9fa; }
+  body { font-family: 'Pretendard', -apple-system, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: var(--bg-color); color: #333; }
+  .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+  h1 { text-align: center; font-size: 22px; margin-bottom: 5px; letter-spacing: -0.5px; }
+  .top-text { text-align: center; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 15px; }
+  .notice { text-align: center; font-size: 12px; color: #999; margin-bottom: 25px; line-height: 1.4; }
+  
+  label { display: block; margin-top: 18px; font-weight: 700; font-size: 13px; color: #666; }
+  input, select { width: 100%; padding: 14px; margin-top: 6px; border-radius: 10px; border: 1px solid #e0e0e0; box-sizing: border-box; font-size: 15px; transition: 0.2s; }
+  input:focus, select:focus { outline: none; border-color: var(--main-color); background-color: #fff; }
+
   .btn-group { margin-top: 20px; display: grid; gap: 10px; }
-  button { width: 100%; padding: 15px; border: none; font-size: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-  .main { background: var(--main-color); color: white; }
-  .main:hover { background: #444; }
-  .kakao { background: #FEE500; color: #3c1e1e; }
-  .pdf { background: #f8f8f8; color: #333; border: 1px solid #ddd; }
-  #result-area { display: none; margin-top: 25px; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #bbb; text-align: center; }
-  #result { font-size: 18px; color: #d32f2f; word-break: keep-all; }
+  button { width: 100%; padding: 16px; border: none; font-size: 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+  .main-btn { background: var(--main-color); color: white; margin-top: 25px; }
+  .main-btn:hover { background: #444; transform: translateY(-2px); }
+  .kakao-btn { background: #FEE500; color: #3c1e1e; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .copy-btn { background: #f1f3f5; color: #495057; }
+
+  #result-area { display: none; margin-top: 30px; padding: 20px; border-radius: 12px; background: #fff5f5; border: 1px solid #ffe3e3; text-align: center; animation: fadeIn 0.5s; }
+  #result { font-size: 18px; color: var(--accent-color); font-weight: 800; line-height: 1.5; }
+  .valid-info { font-size: 11px; color: #fb5252; margin-top: 10px; font-weight: normal; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
@@ -29,109 +35,118 @@
 <div class="card">
   <h1>인테리어 견적 계산기</h1>
   <p class="top-text">✔ 10초만에 확인하는 예상 견적</p>
-  <p class="notice">※ 파비디자인의 실제 시공 데이터 기반 기준입니다</p>
+  <p class="notice">현장 상황 및 자재 브랜드에 따라 견적이 상이할 수 있으며,<br>파비디자인의 시공 데이터 기반 기준입니다.</p>
 
   <label>성함</label>
   <input type="text" id="name" placeholder="성함을 입력해주세요">
 
   <label>연락처</label>
-  <input type="tel" id="phone" placeholder="숫자만 입력 (예: 01012345678)">
+  <input type="tel" id="phone" maxlength="13" placeholder="010-0000-0000" oninput="autoHyphen(this)">
 
   <label>공사 평수 (평)</label>
-  <input type="number" id="pyung" placeholder="평수를 입력하세요">
+  <input type="number" id="pyung" placeholder="예: 33">
 
-  <label>철거 공사 (고정비)</label>
+  <label>철거 공사 (고정비 반영)</label>
   <select id="demolition">
     <option value="0">선택 안함</option>
     <option value="1500000">부분 철거 (150만원)</option>
     <option value="2500000">전체 철거 (250만원)</option>
   </select>
 
-  <label>벽면 마감</label>
+  <label>도배 (벽면 마감)</label>
   <select id="wall">
     <option value="0">선택 안함</option>
-    <option value="120000">전체 합지 도배</option>
-    <option value="180000">전체 실크 도배</option>
-    <option value="250000">프리미엄 디아망/필름</option>
+    <option value="120000">전체 합지 도배 (평당 12만)</option>
+    <option value="180000">전체 실크 도배 (평당 18만)</option>
+    <option value="250000">프리미엄(디아망/필름) (평당 25만)</option>
   </select>
 
   <label>바닥재</label>
   <select id="floor">
     <option value="0">선택 안함</option>
-    <option value="150000">장판 (2.2T 이상)</option>
-    <option value="250000">강마루/광폭마루</option>
-    <option value="350000">원목마루/타일</option>
+    <option value="150000">장판 (평당 15만)</option>
+    <option value="250000">강마루/광폭마루 (평당 25만)</option>
+    <option value="400000">원목마루/타일 (평당 40만)</option>
   </select>
 
   <label>주방 리모델링</label>
   <select id="kitchen">
     <option value="0">선택 안함</option>
-    <option value="3500000">기본 일자형/ㄱ자형</option>
-    <option value="7000000">대형 아일랜드(세라믹/하이엔드)</option>
+    <option value="4000000">기본형 (일자/ㄱ자)</option>
+    <option value="8000000">하이엔드 (아일랜드/세라믹)</option>
   </select>
 
-  <label>욕실 리모델링 (개당)</label>
+  <label>욕실 리모델링 (1소 기준)</label>
   <select id="bathroom">
     <option value="0">선택 안함</option>
-    <option value="3000000">기본형 욕실</option>
-    <option value="5000000">고급 호텔식(졸리컷/대형타일)</option>
+    <option value="3500000">기본형 욕실</option>
+    <option value="5500000">고급형 (졸리컷/대형타일)</option>
   </select>
 
-  <button class="main" onclick="calculate()">실시간 견적 확인하기</button>
+  <button class="main-btn" onclick="calculate()">실시간 견적 확인하기</button>
 
   <div id="result-area">
-    <h2 id="result"></h2>
+    <div id="result"></div>
+    <p class="valid-info">※ 위 견적은 7일간 유효하며, 방문 실측 시 정확한 금액 산출이 가능합니다.</p>
     <div class="btn-group">
-      <button class="pdf" onclick="copyResult()">견적 내용 복사하기</button>
-      <button class="kakao" onclick="goKakao()">카톡으로 상세 상담받기</button>
+      <button class="copy-btn" onclick="copyResult()">견적 내용 복사</button>
+      <button class="kakao-btn" onclick="goKakao()">카톡으로 상세 상담받기</button>
     </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
+// 1. 전화번호 자동 하이픈 기능
+const autoHyphen = (target) => {
+  target.value = target.value
+    .replace(/[^0-9]/g, '')
+    .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+}
+
+// 2. 견적 계산 로직
 function calculate() {
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
   const pyung = document.getElementById("pyung").value;
 
-  if (!name || !phone || !pyung) {
-    alert("상담을 위해 이름, 연락처, 평수를 정확히 입력해주세요.");
+  if (!name || phone.length < 12 || !pyung) {
+    alert("상담을 위해 성함, 연락처, 평수를 정확히 입력해주세요.");
     return;
   }
 
-  // 기본 시공비 로직 (평당 약 100만 원 기본 공정비 가정 - 업체 기준에 따라 조정 가능)
+  // 기본 공사비 (인건비, 자재 운반, 폐기물 등 기초비용) - 평당 100만 원 가정
   let basePrice = pyung * 1000000; 
   
-  // 철거는 고정값, 나머지는 평당 단가로 계산된 값 합산
+  // 철거는 고정값 가산
   let demolition = +document.getElementById("demolition").value;
+  // 도배, 바닥은 평수 비례
   let wall = +document.getElementById("wall").value * pyung;
   let floor = +document.getElementById("floor").value * pyung;
+  // 주방, 욕실은 고정값
   let kitchen = +document.getElementById("kitchen").value;
   let bathroom = +document.getElementById("bathroom").value;
 
   let total = basePrice + demolition + wall + floor + kitchen + bathroom;
 
-  // 범위 산출 (최저~최고)
+  // 오차 범위 설정 (90% ~ 115%)
   let min = Math.floor(total * 0.9 / 10000) * 10000;
-  let max = Math.floor(total * 1.2 / 10000) * 10000;
+  let max = Math.floor(total * 1.15 / 10000) * 10000;
 
-  let resultText = name + "님, 예상 견적은\n" + 
+  let resultText = "✨ " + name + "님 예상 견적 ✨\n" + 
                    min.toLocaleString() + "원 ~ " + 
-                   max.toLocaleString() + "원 입니다.";
+                   max.toLocaleString() + "원";
 
   document.getElementById("result").innerText = resultText;
   document.getElementById("result-area").style.display = "block";
 
-  // 구글 시트 전송 호출
+  // 데이터 전송
   sendData(name, phone, resultText);
 }
 
 function copyResult() {
   let text = document.getElementById("result").innerText;
   navigator.clipboard.writeText(text).then(() => {
-    alert("견적 내용이 복사되었습니다. 카톡 상담 시 붙여넣어 주세요!");
+    alert("견적 내용이 복사되었습니다! 카톡 상담 시 붙여넣어 주세요.");
   });
 }
 
@@ -140,11 +155,11 @@ function goKakao() {
 }
 
 function sendData(name, phone, result) {
-  // 실제 구글 스크립트 URL이 연결되어 있어야 작동합니다.
+  // 구글 시트 연결 URL이 있을 경우 활성화
   fetch("https://script.google.com/macros/s/XXXX/exec", {
     method: "POST",
-    mode: 'no-cors', 
-    body: JSON.stringify({ name: name, phone: phone, result: result }),
+    mode: 'no-cors',
+    body: JSON.stringify({ name: name, phone: phone, result: result.replace(/\n/g, " ") }),
     headers: { "Content-Type": "application/json" }
   });
 }
