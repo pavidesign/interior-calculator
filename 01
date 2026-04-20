@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>인테리어 견적 계산기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>인테리어 견적 계산기</h1>
+
+<!-- 평수 -->
+<label>평수 입력</label>
+<input type="number" id="pyung" placeholder="예: 24">
+
+<!-- 철거 -->
+<label>철거</label>
+<select id="demolition">
+  <option value="0">선택 안함</option>
+  <option value="150000">부분 철거</option>
+  <option value="300000">전체 철거</option>
+</select>
+
+<!-- 도배 -->
+<label>도배</label>
+<select id="wall">
+  <option value="0">선택 안함</option>
+  <option value="120000">합지</option>
+  <option value="180000">실크</option>
+</select>
+
+<!-- 바닥 -->
+<label>바닥</label>
+<select id="floor">
+  <option value="0">선택 안함</option>
+  <option value="150000">장판</option>
+  <option value="250000">강마루</option>
+</select>
+
+<!-- 주방 -->
+<label>주방</label>
+<select id="kitchen">
+  <option value="0">선택 안함</option>
+  <option value="3000000">기본 싱크대</option>
+  <option value="6000000">아일랜드 주방</option>
+</select>
+
+<!-- 욕실 -->
+<label>욕실</label>
+<select id="bathroom">
+  <option value="0">선택 안함</option>
+  <option value="2500000">기본 욕실</option>
+  <option value="4000000">고급 욕실</option>
+</select>
+
+<button onclick="calculate()">견적 계산</button>
+
+<h2 id="result">예상 금액: -</h2>
+
+<button onclick="copyResult()">견적 복사</button>
+
+</body>
+</html>
+
+
+function calculate() {
+  let pyung = document.getElementById("pyung").value;
+
+  if (!pyung) {
+    alert("평수를 입력하세요");
+    return;
+  }
+
+  let demolition = Number(document.getElementById("demolition").value);
+  let wall = Number(document.getElementById("wall").value);
+  let floor = Number(document.getElementById("floor").value);
+  let kitchen = Number(document.getElementById("kitchen").value);
+  let bathroom = Number(document.getElementById("bathroom").value);
+
+  // 평당 기본 공사비
+  let base = pyung * 500000;
+
+  let total = base + demolition + wall + floor + kitchen + bathroom;
+
+  // 현실적인 범위 계산
+  let min = total * 0.9;
+  let max = total * 1.2;
+
+  document.getElementById("result").innerText =
+    "예상 금액: " +
+    Math.floor(min).toLocaleString() +
+    "원 ~ " +
+    Math.floor(max).toLocaleString() +
+    "원";
+}
+
+// 복사 기능
+function copyResult() {
+  let text = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(text);
+  alert("견적이 복사되었습니다");
+}
+
+
+
+body {
+  font-family 'Pretendard', sans-serif;
+  max-width 500px;
+  margin auto;
+  padding 20px;
+  background #f7f7f7;
+}
+
+h1 {
+  text-align center;
+}
+
+label {
+  display block;
+  margin-top 15px;
+}
+
+input, select {
+  width 100%;
+  padding 12px;
+  margin-top 5px;
+  border-radius 6px;
+  border 1px solid #ccc;
+}
+
+button {
+  width 100%;
+  margin-top 20px;
+  padding 14px;
+  background black;
+  color white;
+  border none;
+  font-size 16px;
+  border-radius 6px;
+}
+
+#result {
+  margin-top 20px;
+  text-align center;
+  color #111;
+}
+
